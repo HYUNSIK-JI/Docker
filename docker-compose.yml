@@ -1,0 +1,35 @@
+version: "3"
+
+services:
+  nginx: #nginx라는 이름으로 container 실행
+    image: nginx:latest #베이스 이미지가 nginx:latest
+    ports: #해당 컨테이너의 포트를 호스트(배포할 서버) 포트와 연결
+      - "80:80"
+     #컨테이너 디렉토리와 호스트 디렉토리를 연결 시켜준다.
+    volumes: 
+      - ./DJANGO:/srv/code 
+      - ./DJANGO/nginx:/etc/nginx/conf.d #niginx 설정파일이 있는 위치
+    depends_on: #컨테이너 의존관계를 의미한다.
+      - web #아래 적혀있음
+  db:
+    image: mysql
+    container_name: main.mysql
+    restart: always
+    command: mysqld --character-set-server=utf8 --collation-server=utf8_general_ci --default-authentication-plugin=mysql_native_password
+    environment: 
+      MYSQL_ROOT_PASSWORD: "0000"
+      MYSQL_DATABASE: "django"
+      MYSQL_USER: "django"
+      MYSQL_PASSWORD: "django"
+    ports:
+        - "7001:3306"
+  web:
+    build: ./DJANGO
+    container_name: main.django
+    command: python manage.py runserver 0.0.0.0:8000
+    volumes:
+      - ./DJANGO:/srv/code
+    ports: 
+      - "7000:8000"
+    depends_on: 
+      - db
