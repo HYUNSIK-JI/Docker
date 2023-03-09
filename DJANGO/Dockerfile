@@ -10,3 +10,6 @@ WORKDIR /srv/code
 ADD requirements.txt /srv/code/
 RUN python3 -m pip install --upgrade pip
 RUN pip install -r requirements.txt
+
+RUN ["chmod", "+x", "start.sh"]
+ENTRYPOINT ["sh","./start.sh"]
