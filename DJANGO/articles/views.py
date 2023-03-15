@@ -17,7 +17,6 @@ class ReviewList(APIView):
         reviews = Articles.objects.all()
         serializer = ReviewSerializer(reviews, many=True)
         return Response(serializer.data)
-    
     def post(self, request):
         serializer = ReviewSerializer(data=request.data)
         

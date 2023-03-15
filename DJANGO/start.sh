@@ -1,16 +1,13 @@
 #!/bin/sh 
+yes | python manage.py makemigrations --settings=drfproject.settings
 
-echo "==> Migration 파일 생성"
-yes | python manage.py makemigrations --settings=drfproject.deploy.settings
+echo "==> Django setup, executing: migrate pro"
+python manage.py migrate --settings=drfproject.settings --fake-initial
 
-echo "==> Migrate 실행"
-python manage.py migrate --settings=drfproject.deploy.settings --fake-initial
+echo "==> Django setup, executing: collectstatic"
+python manage.py collectstatic --settings=drfproject.settings --noinput -v 3
 
-echo "==> collectstatic 실행"
-python manage.py collectstatic --settings=drfproject.deploy.settings --noinput -v 3
+pip install -r /srv/code/requirements.txt
+echo "==> Django deploy"
 
-echo "==> 패키지 다운로드"
-pip install -r /code/requirements.txt
-
-echo "==> 배포!"
 gunicorn -b 0.0.0.0:8000 --env DJANGO_SETTINGS_MODULE=drfproject.settings drfproject.wsgi:application

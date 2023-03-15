@@ -7,8 +7,9 @@ services:
       - "80:80"
      #컨테이너 디렉토리와 호스트 디렉토리를 연결 시켜준다.
     volumes: 
-      - ./DJANGO:/srv/code 
+      - ./DJANGO/static:/srv/code/static
       - ./DJANGO/nginx:/etc/nginx/conf.d #niginx 설정파일이 있는 위치
+    
     depends_on: #컨테이너 의존관계를 의미한다.
       - web #아래 적혀있음
   db:
@@ -30,6 +31,6 @@ services:
     volumes:
       - ./DJANGO:/srv/code
     ports: 
-      - "7000:8000"
+      - "7003:8000"
     depends_on: 
       - db
